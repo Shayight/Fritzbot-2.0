@@ -8,9 +8,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Joystick.*;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Talon;
 
 /**
@@ -21,7 +24,9 @@ import edu.wpi.first.wpilibj.Talon;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
+  Joystick dualShock;
+  Talon FL,FR,RL,RR;
+  DifferentialDrive drive;
   private RobotContainer m_robotContainer;
 
 
@@ -34,12 +39,16 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    Joystick controller = new Joystick(0);
-    Talon FL,FR,RL,RR;
-    FL = new Talon(0);
-    //FR = new Talon();
-    //RL = new Talon();
-    //RR = new Talon();
+    dualShock = new Joystick(0);
+    FL = new Talon(4);
+    FR = new Talon(1);
+    RL = new Talon(3);
+    RR = new Talon(2);
+
+    SpeedControllerGroup leftSide = new SpeedControllerGroup(FL, RL);
+    SpeedControllerGroup rightSide = new SpeedControllerGroup(FR, RR);
+
+    drive = new DifferentialDrive(leftSide, rightSide);
   }
 
   /**
@@ -99,8 +108,10 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
+    double inputL = dualShock.getRawAxis(0);
+    double inputR = dualShock.getRawAxis(5);
 
-
+    drive.tankDrive(inputL, inputR);
   }
 
   /**
