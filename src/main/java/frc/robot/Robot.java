@@ -48,14 +48,6 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     dualShock = new Joystick(0);
     driveSys = new DriveSubsystem(4, 1, 3, 2);
-    //FL = new Talon(4);
-    //FR = new Talon(1);
-    //RL = new Talon(3);
-    //RR = new Talon(2);
-    //solenoid = new DoubleSolenoid(0, 7);
-
-    //leftSide = new SpeedControllerGroup(FL, RL);
-    //rightSide = new SpeedControllerGroup(FR, RR);
   }
 
   /**
@@ -113,14 +105,7 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
-    }
-
-
-    //drive = new DifferentialDrive(leftSide, rightSide);
-
-    //drive.setSafetyEnabled(false);
-
-  
+    } 
   }
 
   /**
@@ -131,10 +116,8 @@ public class Robot extends TimedRobot {
     double inputL = dualShock.getRawAxis(1);
     double inputR = dualShock.getRawAxis(5); 
     double modifier = 1; 
-   //System.out.println(inputL + " , " + inputR);
 
     driveSys.control(inputL, inputR, modifier);
-   // drive.tankDrive(inputL*modifier, inputR*modifier);
   }
 
   @Override
