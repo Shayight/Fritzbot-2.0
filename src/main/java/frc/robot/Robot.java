@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Joystick.*;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -24,10 +25,14 @@ import edu.wpi.first.wpilibj.Talon;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  Joystick dualShock;
-  Talon FL,FR,RL,RR;
-  DifferentialDrive drive;
+  public Joystick dualShock;
+  public Talon FL,FR,RL,RR;
+  public DifferentialDrive drive;
+  public SpeedControllerGroup leftSide;
+  public SpeedControllerGroup rightSide;
   private RobotContainer m_robotContainer;
+  public DoubleSolenoid solenoid;
+
 
 
   /**
@@ -44,11 +49,10 @@ public class Robot extends TimedRobot {
     FR = new Talon(1);
     RL = new Talon(3);
     RR = new Talon(2);
+    solenoid = new DoubleSolenoid(0, 7);
 
-    SpeedControllerGroup leftSide = new SpeedControllerGroup(FL, RL);
-    SpeedControllerGroup rightSide = new SpeedControllerGroup(FR, RR);
-
-    drive = new DifferentialDrive(leftSide, rightSide);
+    leftSide = new SpeedControllerGroup(FL, RL);
+    rightSide = new SpeedControllerGroup(FR, RR);
   }
 
   /**
@@ -108,10 +112,11 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    double inputL = dualShock.getRawAxis(0);
-    double inputR = dualShock.getRawAxis(5);
+    drive = new DifferentialDrive(leftSide, rightSide);
 
-    drive.tankDrive(inputL, inputR);
+    drive.setSafetyEnabled(false);
+
+  
   }
 
   /**
@@ -119,6 +124,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    double inputL = dualShock.getRawAxis(1);
+    double inputR = dualShock.getRawAxis(5); 
+    double modifier = 1; 
+   //System.out.println(inputL + " , " + inputR);
+
+    drive.tankDrive(inputL*modifier, inputR*modifier);
   }
 
   @Override
