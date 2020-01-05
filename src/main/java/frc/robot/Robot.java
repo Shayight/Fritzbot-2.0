@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Joystick.*;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -26,12 +27,13 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   public Joystick dualShock;
-  public Talon FL,FR,RL,RR;
-  public DifferentialDrive drive;
-  public SpeedControllerGroup leftSide;
-  public SpeedControllerGroup rightSide;
+  //public Talon FL,FR,RL,RR;
+  //public DifferentialDrive drive;
+  //public SpeedControllerGroup leftSide;
+  //public SpeedControllerGroup rightSide;
   private RobotContainer m_robotContainer;
   public DoubleSolenoid solenoid;
+  private DriveSubsystem driveSys;
 
 
 
@@ -45,14 +47,15 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     dualShock = new Joystick(0);
-    FL = new Talon(4);
-    FR = new Talon(1);
-    RL = new Talon(3);
-    RR = new Talon(2);
-    solenoid = new DoubleSolenoid(0, 7);
+    driveSys = new DriveSubsystem(4, 1, 3, 2);
+    //FL = new Talon(4);
+    //FR = new Talon(1);
+    //RL = new Talon(3);
+    //RR = new Talon(2);
+    //solenoid = new DoubleSolenoid(0, 7);
 
-    leftSide = new SpeedControllerGroup(FL, RL);
-    rightSide = new SpeedControllerGroup(FR, RR);
+    //leftSide = new SpeedControllerGroup(FL, RL);
+    //rightSide = new SpeedControllerGroup(FR, RR);
   }
 
   /**
@@ -112,9 +115,10 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    drive = new DifferentialDrive(leftSide, rightSide);
 
-    drive.setSafetyEnabled(false);
+    //drive = new DifferentialDrive(leftSide, rightSide);
+
+    //drive.setSafetyEnabled(false);
 
   
   }
@@ -129,7 +133,8 @@ public class Robot extends TimedRobot {
     double modifier = 1; 
    //System.out.println(inputL + " , " + inputR);
 
-    drive.tankDrive(inputL*modifier, inputR*modifier);
+    driveSys.control(inputL, inputR, modifier);
+   // drive.tankDrive(inputL*modifier, inputR*modifier);
   }
 
   @Override
