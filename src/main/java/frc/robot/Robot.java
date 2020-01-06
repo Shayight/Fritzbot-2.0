@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Joystick.*;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -32,8 +33,8 @@ public class Robot extends TimedRobot {
   //public SpeedControllerGroup leftSide;
   //public SpeedControllerGroup rightSide;
   private RobotContainer m_robotContainer;
-  public DoubleSolenoid solenoid;
   private DriveSubsystem driveSys;
+  private ShooterSubsystem shooterSys;
 
 
 
@@ -48,6 +49,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     dualShock = new Joystick(0);
     driveSys = new DriveSubsystem(4, 1, 3, 2);
+    shooterSys = new ShooterSubsystem(2, 3, 5, 6, 5, 7);
   }
 
   /**
@@ -118,6 +120,28 @@ public class Robot extends TimedRobot {
     double modifier = 1; 
 
     driveSys.control(inputL, inputR, modifier);
+
+    boolean square = dualShock.getRawButton(1);
+    boolean cross = dualShock.getRawButton(2);
+    boolean circle = dualShock.getRawButton(3);
+    boolean triangle = dualShock.getRawButton(4);
+    boolean leftBumper = dualShock.getRawButton(5);
+    boolean rightBumper = dualShock.getRawButton(6);
+
+    if(cross) {
+      shooterSys.liftShooter();
+    }if(circle) {
+      shooterSys.dropShooter();
+    }if(leftBumper) {
+      shooterSys.fire(1,1);
+    }if(rightBumper){
+      shooterSys.reload();
+    }if(triangle){
+      driveSys.lowGear();
+    }if(square){
+      driveSys.highGear();
+    }
+
   }
 
   @Override

@@ -45,4 +45,12 @@ public class DriveSubsystem extends SubsystemBase {
   public void control(double inputL, double inputR, double modifier) {
     drive.tankDrive(inputL*modifier, inputR*modifier);
   }
+
+  public void lowGear(){
+      solenoid.set(DoubleSolenoid.Value.kForward);
+  }
+  public void highGear(){
+    solenoid.set(DoubleSolenoid.Value.kReverse);
+}
+  
 }
