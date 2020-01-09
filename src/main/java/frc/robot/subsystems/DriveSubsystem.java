@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
@@ -21,19 +22,24 @@ public class DriveSubsystem extends SubsystemBase {
   public DifferentialDrive drive;
   public SpeedControllerGroup leftSide,rightSide;
   public DoubleSolenoid solenoid;
+  public AnalogGyro gyro;
 
   public DriveSubsystem(int FLPos, int FRPos, int RLPos, int RRPos) {
     FL = new Talon(FLPos);
     FR = new Talon(FRPos);
     RL = new Talon(RLPos);
     RR = new Talon(RRPos);
+    gyro = new AnalogGyro(0);
     
     leftSide = new SpeedControllerGroup(FL, RL);
     rightSide = new SpeedControllerGroup(FR, RR);
     solenoid = new DoubleSolenoid(0, 7);
+    
 
     drive = new DifferentialDrive(leftSide, rightSide);
-    drive.setSafetyEnabled(false);
+    //gyro.initGyro();
+    gyro.calibrate();
+    drive.setSafetyEnabled(true);
 
   }
 
@@ -44,6 +50,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void control(double inputL, double inputR, double modifier) {
     drive.tankDrive(inputL*modifier, inputR*modifier);
+    double x = gyro.getAngle();
+
+    //for(;;) {
+    //  System.out.println(x);
+    //}
   }
 
   public void lowGear(){

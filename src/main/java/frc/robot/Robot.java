@@ -8,16 +8,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Joystick.*;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -49,7 +45,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     dualShock = new Joystick(0);
     driveSys = new DriveSubsystem(4, 1, 3, 2);
-    shooterSys = new ShooterSubsystem(2, 3, 5, 6, 5, 7);
+    shooterSys = new ShooterSubsystem(2, 3, 5, 6, 5, 0, 0);
   }
 
   /**
@@ -97,6 +93,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    driveSys.lowGear();
+
   }
 
   @Override
@@ -108,6 +106,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     } 
+    shooterSys.dropShooter();
   }
 
   /**
@@ -127,20 +126,38 @@ public class Robot extends TimedRobot {
     boolean triangle = dualShock.getRawButton(4);
     boolean leftBumper = dualShock.getRawButton(5);
     boolean rightBumper = dualShock.getRawButton(6);
+    boolean leftTrigger = dualShock.getRawButton(7);
 
+    boolean isShooting = false;
+    boolean heightMod = false;
+    boolean gearState = false;
+     
     if(cross) {
       shooterSys.liftShooter();
     }if(circle) {
       shooterSys.dropShooter();
-    }if(leftBumper) {
+    }
+    if(leftBumper) {
       shooterSys.fire(1,1);
     }if(rightBumper){
       shooterSys.reload();
-    }if(triangle){
+    }if(leftTrigger){
+      shooterSys.load();
+    }
+    if(triangle){
       driveSys.lowGear();
     }if(square){
       driveSys.highGear();
     }
+    /** 
+    if(cross && heightMod == false){
+      shooterSys.liftShooter();
+      heightMod = true;
+    }else if(cross && heightMod == true){
+      shooterSys.dropShooter();
+      heightMod = false;
+    }*/
+
 
   }
 
