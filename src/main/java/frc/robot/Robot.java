@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
@@ -105,6 +106,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    controls();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     } 
@@ -116,51 +118,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    double inputL = dualShock2.getRawAxis(1);
-    double inputR = dualShock2.getRawAxis(5); 
+    double inputL = dualShock.getRawAxis(1);
+    double inputR = dualShock.getRawAxis(5); 
     double modifier = 1; 
 
     driveSys.control(inputL, inputR, modifier);
-
-    boolean square = dualShock2.getRawButton(1);
-    boolean cross = dualShock.getRawButton(2);
-    boolean circle = dualShock.getRawButton(3);
-    boolean triangle = dualShock2.getRawButton(4);
-    boolean leftBumper = dualShock.getRawButton(5);
-    boolean rightBumper = dualShock.getRawButton(6);
-    boolean leftTrigger = dualShock.getRawButton(7);
-
-    boolean isShooting = false;
-    boolean heightMod = false;
-    boolean gearState = false;
-     
-    if(cross) {
-      shooterSys.liftShooter();
-    }if(circle) {
-      shooterSys.dropShooter();
-    }
-    if(leftBumper) {
-      shooterSys.fire(1,1);
-    }if(rightBumper){
-      shooterSys.reload();
-    }if(leftTrigger){
-      shooterSys.load();
-    }
-    if(triangle){
-      driveSys.lowGear();
-    }if(square){
-      driveSys.highGear();
-    }
-    /** 
-    if(cross && heightMod == false){
-      shooterSys.liftShooter();
-      heightMod = true;
-    }else if(cross && heightMod == true){
-      shooterSys.dropShooter();
-      heightMod = false;
-    }*/
-
-
   }
 
   @Override
@@ -174,5 +136,29 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+  }
+
+  public void controls() {
+    new JoystickButton(dualShock, 1)
+      .whenPressed(() -> driveSys.highGear());
+    new JoystickButton(dualShock, 2)
+      .whenPressed(() -> toggleShooter());
+    new JoystickButton(dualShock, 3)
+      .whenPressed(() -> shooterSys.dropShooter());
+    new JoystickButton(dualShock, 4)
+      .whenPressed(() -> driveSys.lowGear());
+    new JoystickButton(dualShock, 5)
+      .whenPressed(() -> shooterSys.fire(1,1));
+    new JoystickButton(dualShock, 6)
+      .whenPressed(() -> driveSys.resetGyro());
+  }
+
+  public void toggleShooter() {
+    //isLifted = !isLifted;
+    if(!shooterSys.isUp()) {
+      shooterSys.liftShooter();
+    }else {
+      shooterSys.dropShooter();
+    }
   }
 }

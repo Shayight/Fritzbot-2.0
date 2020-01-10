@@ -27,7 +27,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void liftShooter() {
         heightSolenoid.set(DoubleSolenoid.Value.kForward);
+        heightSolenoid.get();
         //print("Cross pressed");
+    }
+
+    public boolean isUp() {
+        return heightSolenoid.get() == DoubleSolenoid.Value.kForward;
     }
 
     public void dropShooter() {
@@ -36,22 +41,23 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void startRelay() {
-        windowMotor.set(Relay.Value.kForward);
+        windowMotor.set(Relay.Value.kReverse);
+    }
+
+    public void stopRelay() {
+        windowMotor.set(Relay.Value.kOff);
     }
 
     public void fire(double modifier1, double modifier2) {
         motor1.setSpeed(.5*modifier1);
         motor2.setSpeed(1*modifier2);
         timer.delay(1);
-        windowMotor.set(Relay.Value.kOff);
         shooterSolenoid.set(DoubleSolenoid.Value.kForward);
         timer.delay(2);
         motor1.setSpeed(0);
         motor2.setSpeed(0);
-        windowMotor.set(Relay.Value.kReverse);
         shooterSolenoid.set(DoubleSolenoid.Value.kReverse);
         timer.delay(1);
-        windowMotor.set(Relay.Value.kOff);
 
     }
 

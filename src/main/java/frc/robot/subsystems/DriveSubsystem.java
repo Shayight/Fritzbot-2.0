@@ -10,7 +10,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
@@ -22,14 +22,14 @@ public class DriveSubsystem extends SubsystemBase {
   public DifferentialDrive drive;
   public SpeedControllerGroup leftSide,rightSide;
   public DoubleSolenoid solenoid;
-  public AnalogGyro gyro;
+  public ADXRS450_Gyro gyro;
 
   public DriveSubsystem(int FLPos, int FRPos, int RLPos, int RRPos) {
     FL = new Talon(FLPos);
     FR = new Talon(FRPos);
     RL = new Talon(RLPos);
     RR = new Talon(RRPos);
-    gyro = new AnalogGyro(0);
+    gyro = new ADXRS450_Gyro();
     
     leftSide = new SpeedControllerGroup(FL, RL);
     rightSide = new SpeedControllerGroup(FR, RR);
@@ -37,9 +37,10 @@ public class DriveSubsystem extends SubsystemBase {
     
 
     drive = new DifferentialDrive(leftSide, rightSide);
-    //gyro.initGyro();
     gyro.calibrate();
+    gyro.reset();
     drive.setSafetyEnabled(true);
+    
 
   }
 
@@ -51,10 +52,8 @@ public class DriveSubsystem extends SubsystemBase {
   public void control(double inputL, double inputR, double modifier) {
     drive.tankDrive(inputL*modifier, inputR*modifier);
     double x = gyro.getAngle();
-
-    //for(;;) {
-    //  System.out.println(x);
-    //}
+    System.out.println(x);
+    
   }
 
   public void lowGear(){
@@ -63,5 +62,8 @@ public class DriveSubsystem extends SubsystemBase {
   public void highGear(){
     solenoid.set(DoubleSolenoid.Value.kReverse);
 }
+  public void resetGyro(){
+    gyro.reset();
+  }
   
 }
