@@ -42,7 +42,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public void fire(double modifier1, double modifier2) {
         motor1.setSpeed(.5*modifier1);
         motor2.setSpeed(1*modifier2);
-        timer.delay(1F);
+        timer.delay(1);
         windowMotor.set(Relay.Value.kOff);
         shooterSolenoid.set(DoubleSolenoid.Value.kForward);
         timer.delay(2);
