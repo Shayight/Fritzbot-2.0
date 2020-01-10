@@ -144,7 +144,7 @@ public class Robot extends TimedRobot {
     new JoystickButton(dualShock, 2)
       .whenPressed(() -> toggleShooter());
     new JoystickButton(dualShock, 3)
-      .whenPressed(() -> shooterSys.dropShooter());
+      .whenPressed(() -> toggleRelay());
     new JoystickButton(dualShock, 4)
       .whenPressed(() -> driveSys.lowGear());
     new JoystickButton(dualShock, 5)
@@ -159,6 +159,14 @@ public class Robot extends TimedRobot {
       shooterSys.liftShooter();
     }else {
       shooterSys.dropShooter();
+    }
+  }
+
+  public void toggleRelay() {
+    if(!shooterSys.isRelayOn()){
+      shooterSys.startRelay();
+    }else {
+      shooterSys.stopRelay();
     }
   }
 }

@@ -35,6 +35,10 @@ public class ShooterSubsystem extends SubsystemBase {
         return heightSolenoid.get() == DoubleSolenoid.Value.kForward;
     }
 
+    public boolean isRelayOn() {
+        return windowMotor.get() == Relay.Value.kReverse;
+    }
+
     public void dropShooter() {
         heightSolenoid.set(DoubleSolenoid.Value.kReverse);
         //print("Circle pressed");
