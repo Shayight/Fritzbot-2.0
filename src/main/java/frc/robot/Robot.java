@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.Joystick;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   public Joystick dualShock;
+  public Joystick dualShock2;
   //public Talon FL,FR,RL,RR;
   //public DifferentialDrive drive;
   //public SpeedControllerGroup leftSide;
@@ -44,6 +45,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     dualShock = new Joystick(0);
+    dualShock2 = new Joystick(1);
     driveSys = new DriveSubsystem(4, 1, 3, 2);
     shooterSys = new ShooterSubsystem(2, 3, 5, 6, 5, 0, 0);
   }
@@ -114,16 +116,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    double inputL = dualShock.getRawAxis(1);
-    double inputR = dualShock.getRawAxis(5); 
+    double inputL = dualShock2.getRawAxis(1);
+    double inputR = dualShock2.getRawAxis(5); 
     double modifier = 1; 
 
     driveSys.control(inputL, inputR, modifier);
 
-    boolean square = dualShock.getRawButton(1);
+    boolean square = dualShock2.getRawButton(1);
     boolean cross = dualShock.getRawButton(2);
     boolean circle = dualShock.getRawButton(3);
-    boolean triangle = dualShock.getRawButton(4);
+    boolean triangle = dualShock2.getRawButton(4);
     boolean leftBumper = dualShock.getRawButton(5);
     boolean rightBumper = dualShock.getRawButton(6);
     boolean leftTrigger = dualShock.getRawButton(7);
