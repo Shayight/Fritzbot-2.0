@@ -8,6 +8,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -52,8 +54,15 @@ public class DriveSubsystem extends SubsystemBase {
   public void control(double inputL, double inputR, double modifier) {
     drive.tankDrive(inputL*modifier, inputR*modifier);
     double x = gyro.getAngle();
-    System.out.println(x);
+    //System.out.println(x);
     
+  }
+
+  public void autoCont() {
+    solenoid.set(DoubleSolenoid.Value.kForward);
+    drive.tankDrive(1, 1);
+    Timer.delay(5);
+    drive.tankDrive(0,0);
   }
 
   public void lowGear(){

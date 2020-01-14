@@ -8,12 +8,19 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.CameraSubsystem.CameraMode;
+import frc.robot.subsystems.CameraSubsystem.LightMode;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
 
 
 /**
@@ -33,6 +40,16 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private DriveSubsystem driveSys;
   private ShooterSubsystem shooterSys;
+  private CameraSubsystem limelight;
+
+  /**public static enum LightMode {
+		eOn, eOff, eBlink
+  }
+  
+	public static enum CameraMode {
+		eVision, eDriver
+	} */
+
 
 
 
@@ -49,6 +66,8 @@ public class Robot extends TimedRobot {
     dualShock2 = new Joystick(1);
     driveSys = new DriveSubsystem(4, 1, 3, 2);
     shooterSys = new ShooterSubsystem(2, 3, 5, 6, 5, 0, 0);
+    limelight = new CameraSubsystem();
+    limelight.Vision();
   }
 
   /**
@@ -89,6 +108,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    limelight.setPipeline(0);
+    limelight.setCameraMode(CameraMode.eVision);
+    limelight.setLedMode(LightMode.eOff);
+
   }
 
   /**
@@ -96,8 +120,19 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    driveSys.lowGear();
+    driveSys.autoCont();
 
+    //driveSys.lowGear();
+    double leftAdjust = 0.0;
+    double rightAdjust = 0.0;
+
+    //leftAdjust += limelight.aimbot();
+    //rightAdjust -= limelight.aimbot();
+
+
+    //driveSys.control(leftAdjust,rightAdjust,1);
+    
+    //System.out.println(leftAdjust + " , " +  rightAdjust);
   }
 
   @Override
@@ -123,6 +158,8 @@ public class Robot extends TimedRobot {
     double modifier = 1; 
 
     driveSys.control(inputL, inputR, modifier);
+    shooterSys.ColorSensor();
+    shooterSys.Proximity();
   }
 
   @Override
@@ -151,8 +188,10 @@ public class Robot extends TimedRobot {
       .whenPressed(() -> shooterSys.fire(1,1));
     new JoystickButton(dualShock, 6)
       .whenPressed(() -> driveSys.resetGyro());
+    new JoystickButton(dualShock, 7)
+      .whenPressed(() -> limelight.setLedMode(LightMode.eOff));
   }
-
+  
   public void toggleShooter() {
     //isLifted = !isLifted;
     if(!shooterSys.isUp()) {
@@ -169,4 +208,26 @@ public class Robot extends TimedRobot {
       shooterSys.stopRelay();
     }
   }
+
+  public double aimbot() {
+    float kp = -1f;
+    float minCommand = .05f;
+    float steeringAdjust = 0.5f;
+    //double txEntry = getValue("tx").getDouble(0.0);
+    float tx = (float) NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+    //SmartDashboard.setDefaultNumber("TX", tx);
+    float headingError = -tx;
+
+    if(tx > 1) {
+        steeringAdjust = kp*headingError -minCommand;
+    }else if (tx < 1){
+        steeringAdjust = kp*headingError + minCommand;
+    }
+    
+    return steeringAdjust;
+
+
+}
+
+
 }

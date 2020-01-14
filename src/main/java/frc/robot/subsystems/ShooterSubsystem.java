@@ -4,7 +4,11 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.revrobotics.ColorSensorV3;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard; 
 
 public class ShooterSubsystem extends SubsystemBase {
 
@@ -12,7 +16,9 @@ public class ShooterSubsystem extends SubsystemBase {
     VictorSP motor1,motor2;
     Relay windowMotor;
     Timer timer;
-    
+    I2C.Port i2c;
+    ColorSensorV3 colorSensor;
+    SmartDashboard dashboard;
 
 
     public ShooterSubsystem(int heightForward, int heightReverse, int shooterForward, int shooterReverse, int shooterMotor1, int shooterMotor2, int relayPort) {
@@ -22,6 +28,8 @@ public class ShooterSubsystem extends SubsystemBase {
         motor2 = new VictorSP(shooterMotor2);
         windowMotor = new Relay(relayPort);
         timer = new Timer();
+        i2c = I2C.Port.kOnboard;
+        colorSensor = new ColorSensorV3(i2c);
     }
 
 
@@ -74,6 +82,24 @@ public class ShooterSubsystem extends SubsystemBase {
     
     public void load() {
         windowMotor.set(Relay.Value.kReverse);
+    }
+
+    public void ColorSensor() {
+        Color detectedColor = colorSensor.getColor();
+        double IR = colorSensor.getIR();
+        double r = detectedColor.red;
+        double g = detectedColor.green;
+        double b = detectedColor.blue;
+        dashboard.putNumber("Red", r);
+        dashboard.putNumber("Green", g);
+        dashboard.putNumber("Blue", b);
+        dashboard.putNumber("IR Value", IR);
+
+    }
+
+    public void Proximity() {
+        int proximity = colorSensor.getProximity();
+        dashboard.putNumber("Proximity", proximity);
     }
 
     public void print(String input){
