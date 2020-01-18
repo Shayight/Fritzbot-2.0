@@ -60,24 +60,19 @@ public class ShooterSubsystem extends SubsystemBase {
         windowMotor.set(Relay.Value.kOff);
     }
 
-    public void fire(double modifier1, double modifier2) {
+    public void spoolMotors(double modifier1, double modifier2) {
         motor1.setSpeed(.5*modifier1);
         motor2.setSpeed(1*modifier2);
-        timer.delay(1);
-        shooterSolenoid.set(DoubleSolenoid.Value.kForward);
-        timer.delay(2);
-        motor1.setSpeed(0);
-        motor2.setSpeed(0);
-        shooterSolenoid.set(DoubleSolenoid.Value.kReverse);
-        timer.delay(1);
-
     }
 
-    public void reload() {
-        shooterSolenoid.set(DoubleSolenoid.Value.kReverse);
+    public void fireFrisbee() {
+        shooterSolenoid.set(DoubleSolenoid.Value.kForward);
+    }
+
+    public void resetShooter() {
         motor1.setSpeed(0);
         motor2.setSpeed(0);
-        windowMotor.set(Relay.Value.kOff);
+        shooterSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
     
     public void load() {

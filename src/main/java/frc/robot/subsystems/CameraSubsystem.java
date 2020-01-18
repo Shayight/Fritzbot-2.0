@@ -25,7 +25,7 @@ public class CameraSubsystem extends SubsystemBase {
 	 * 
 	 * @author Dan Waxman
 	 */
-	public static enum LightMode {
+	public enum LightMode {
 		eOn, eOff, eBlink
 	}
 
@@ -40,7 +40,7 @@ public class CameraSubsystem extends SubsystemBase {
 
     public void Vision() {
         ShuffleboardTab dashTab = Shuffleboard.getTab("Dash");
-        LLFeed = new HttpCamera("limelight", "http://limelight.local/5800/stream.mjpeg");
+        LLFeed = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjpeg");
         //limelightFeed = new HttpCamera("limelight","https://limelight.local:5801/stream.mjpg");
         dashTab.add("LL", LLFeed).withPosition(0, 0).withSize(15, 8);
 

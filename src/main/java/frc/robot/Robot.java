@@ -17,10 +17,10 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.CameraSubsystem.CameraMode;
 import frc.robot.subsystems.CameraSubsystem.LightMode;
+import frc.robot.utils.Limelight;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-
 
 
 /**
@@ -40,7 +40,8 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private DriveSubsystem driveSys;
   private ShooterSubsystem shooterSys;
-  private CameraSubsystem limelight;
+  private CameraSubsystem cam;
+  private Limelight limelight;
 
   /**public static enum LightMode {
 		eOn, eOff, eBlink
@@ -66,8 +67,9 @@ public class Robot extends TimedRobot {
     dualShock2 = new Joystick(1);
     driveSys = new DriveSubsystem(4, 1, 3, 2);
     shooterSys = new ShooterSubsystem(2, 3, 5, 6, 5, 0, 0);
-    limelight = new CameraSubsystem();
-    limelight.Vision();
+    limelight = new Limelight();
+    cam = new CameraSubsystem();
+    cam.Vision();
   }
 
   /**
@@ -109,9 +111,11 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
 
-    limelight.setPipeline(0);
-    limelight.setCameraMode(CameraMode.eVision);
-    limelight.setLedMode(LightMode.eOff);
+    cam.setPipeline(0);
+    cam.setCameraMode(CameraMode.eVision);
+    cam.setLedMode(LightMode.eOff);
+    //driveSys.autoCont();
+    System.out.println("Passed int");
 
   }
 
@@ -120,19 +124,29 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    driveSys.autoCont();
-
+    /*
     //driveSys.lowGear();
-    double leftAdjust = 0.0;
-    double rightAdjust = 0.0;
-
-    //leftAdjust += limelight.aimbot();
-    //rightAdjust -= limelight.aimbot();
-
-
-    //driveSys.control(leftAdjust,rightAdjust,1);
+    limelight.setLedMode(LightMode.eOff);
+    System.out.println("Now in periodic");
+    driveSys.auto();
     
-    //System.out.println(leftAdjust + " , " +  rightAdjust);
+    */
+
+   // double leftAdjust = 0.0;
+   // double rightAdjust = 0.0;
+   // System.out.println("Created adjust varibles");
+   //while (limelight.isTarget() != false) {
+   // driveSys.control(leftAdjust,rightAdjust,1,1);
+   // System.out.println(limelight.getTx() + "," + limelight.isTarget());
+   //}
+   //if (limelight.isTarget() == false){
+   //driveSys.control(-.1, -.1, 1, 2);
+   //}
+   //System.out.println("Passed movement functions");
+   //System.out.println(leftAdjust + " , " +  rightAdjust);
+
+
+
   }
 
   @Override
@@ -153,13 +167,18 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    limelight.setCameraMode("vision");
+    limelight.setLed("off");
+    limelight.debug();
     double inputL = dualShock.getRawAxis(1);
     double inputR = dualShock.getRawAxis(5); 
     double modifier = 1; 
-
-    driveSys.control(inputL, inputR, modifier);
+    
+    //cam.setLedMode(LightMode.eOff);
+    driveSys.control(inputL, inputR, modifier,0);
     shooterSys.ColorSensor();
     shooterSys.Proximity();
+    
   }
 
   @Override
@@ -177,19 +196,21 @@ public class Robot extends TimedRobot {
 
   public void controls() {
     new JoystickButton(dualShock, 1)
-      .whenPressed(() -> driveSys.highGear());
+      .whenPressed(() -> {
+        driveSys.highGear();
+      });
     new JoystickButton(dualShock, 2)
       .whenPressed(() -> toggleShooter());
     new JoystickButton(dualShock, 3)
       .whenPressed(() -> toggleRelay());
     new JoystickButton(dualShock, 4)
       .whenPressed(() -> driveSys.lowGear());
-    new JoystickButton(dualShock, 5)
-      .whenPressed(() -> shooterSys.fire(1,1));
+    //new JoystickButton(dualShock, 5)
+    //  .whenPressed(() -> shooterSys.fire(1,1));
     new JoystickButton(dualShock, 6)
       .whenPressed(() -> driveSys.resetGyro());
-    new JoystickButton(dualShock, 7)
-      .whenPressed(() -> limelight.setLedMode(LightMode.eOff));
+    //new JoystickButton(dualShock, 7)
+    //  .whenPressed(() -> limelight.setLedMode(LightMode.eOff));
   }
   
   public void toggleShooter() {
@@ -214,7 +235,8 @@ public class Robot extends TimedRobot {
     float minCommand = .05f;
     float steeringAdjust = 0.5f;
     //double txEntry = getValue("tx").getDouble(0.0);
-    float tx = (float) NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+    float tx = (float) 
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
     //SmartDashboard.setDefaultNumber("TX", tx);
     float headingError = -tx;
 
