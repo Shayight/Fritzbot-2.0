@@ -52,52 +52,11 @@ public class DriveSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void control(double inputL, double inputR, double modifier, double time) {
-    if (drive.isSafetyEnabled() == true) {
-      drive.setSafetyEnabled(true);
-    }
-    if ((time != 0)&&(time>=0)){
-    drive.setExpiration(time);
-    }
-    else {
-    drive.setExpiration(5);
-    }
+  public void control(double inputL, double inputR, double modifier) {
     drive.tankDrive(inputL*modifier, inputR*modifier);
     double x = gyro.getAngle();
-    //System.out.println(x);
-    drive.setExpiration(.1);
   }
-  public void auto(){
-    Boolean ismoving = false;
-    
-    if (drive.isSafetyEnabled() == true) {
-      drive.setSafetyEnabled(true);
-    }
-    solenoid.set(DoubleSolenoid.Value.kForward);
-    if (ismoving == false){
-      ismoving = true;
-    control(-1,-1,1,5);
-    Timer.delay(3);
-    control(0,0,1,5);
-    }
-    ismoving = false;
-  } 
-  public void autoCont() {
-    double time;
-    time = 3;
-    if (drive.isSafetyEnabled() == true) {
-      drive.setSafetyEnabled(true);
-    }
-
-    solenoid.set(DoubleSolenoid.Value.kForward);
-    drive.setExpiration(time);
-    control(-1,-1,1,5);
-    System.out.println("Movement");
-    Timer.delay(3);
-    control(0, 0, 1,5);
-    System.out.println("Movement two");
-    drive.setExpiration(.1);
-  }
+  
 
   public void lowGear(){
       solenoid.set(DoubleSolenoid.Value.kForward);

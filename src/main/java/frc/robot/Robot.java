@@ -12,12 +12,17 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.DriveCommand;
+import frc.robot.commands.JoystickCommand;
+import frc.robot.commands.ShootingCommand;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.CameraSubsystem.CameraMode;
 import frc.robot.subsystems.CameraSubsystem.LightMode;
 import frc.robot.utils.Limelight;
+import frc.robot.utils.OI;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -40,8 +45,12 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private DriveSubsystem driveSys;
   private ShooterSubsystem shooterSys;
+  private JoystickSubsystem joySys;
+  private DriveCommand driveCommand;
   private CameraSubsystem cam;
   private Limelight limelight;
+    private OI oi;
+  private ShootingCommand scomm;
 
   /**public static enum LightMode {
 		eOn, eOff, eBlink
@@ -68,7 +77,10 @@ public class Robot extends TimedRobot {
     driveSys = new DriveSubsystem(4, 1, 3, 2);
     shooterSys = new ShooterSubsystem(2, 3, 5, 6, 5, 0, 0);
     limelight = new Limelight();
+    scomm = new ShootingCommand();
     cam = new CameraSubsystem();
+    oi = new OI();
+    driveCommand = new DriveCommand(driveSys, joySys);
     cam.Vision();
   }
 
@@ -110,13 +122,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-
-    cam.setPipeline(0);
-    cam.setCameraMode(CameraMode.eVision);
-    cam.setLedMode(LightMode.eOff);
     //driveSys.autoCont();
-    System.out.println("Passed int");
+    System.out.println("Passed init");
 
+    cam.setCameraMode(CameraMode.eVision);
+    cam.setLedMode(LightMode.eOn);
   }
 
   /**
@@ -124,16 +134,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    /*
-    //driveSys.lowGear();
-    limelight.setLedMode(LightMode.eOff);
-    System.out.println("Now in periodic");
-    driveSys.auto();
-    
-    */
+   double leftAdjust = 0.0;
+   double rightAdjust = 0.0;
 
-   // double leftAdjust = 0.0;
-   // double rightAdjust = 0.0;
+   leftAdjust -= aimbot();
+   rightAdjust += aimbot();
+
+   driveSys.control(leftAdjust, rightAdjust, 1);
+
    // System.out.println("Created adjust varibles");
    //while (limelight.isTarget() != false) {
    // driveSys.control(leftAdjust,rightAdjust,1,1);
@@ -155,11 +163,15 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    controls();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     } 
+    driveCommand.initialize();
     shooterSys.dropShooter();
+    limelight.setCameraMode("vision");
+    limelight.setLed("off");
+    cam.setLedMode(LightMode.eOff);
+    cam.setCameraMode(CameraMode.eDriver);
   }
 
   /**
@@ -167,17 +179,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    limelight.setCameraMode("vision");
-    limelight.setLed("off");
+    driveCommand.execute();
     limelight.debug();
     double inputL = dualShock.getRawAxis(1);
     double inputR = dualShock.getRawAxis(5); 
     double modifier = 1; 
     
-    //cam.setLedMode(LightMode.eOff);
-    driveSys.control(inputL, inputR, modifier,0);
     shooterSys.ColorSensor();
     shooterSys.Proximity();
+    joySys.ControlMapping(driveSys, scomm);
     
   }
 
@@ -194,46 +204,14 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
   }
 
-  public void controls() {
-    new JoystickButton(dualShock, 1)
-      .whenPressed(() -> {
-        driveSys.highGear();
-      });
-    new JoystickButton(dualShock, 2)
-      .whenPressed(() -> toggleShooter());
-    new JoystickButton(dualShock, 3)
-      .whenPressed(() -> toggleRelay());
-    new JoystickButton(dualShock, 4)
-      .whenPressed(() -> driveSys.lowGear());
-    //new JoystickButton(dualShock, 5)
-    //  .whenPressed(() -> shooterSys.fire(1,1));
-    new JoystickButton(dualShock, 6)
-      .whenPressed(() -> driveSys.resetGyro());
-    //new JoystickButton(dualShock, 7)
-    //  .whenPressed(() -> limelight.setLedMode(LightMode.eOff));
-  }
+ 
   
-  public void toggleShooter() {
-    //isLifted = !isLifted;
-    if(!shooterSys.isUp()) {
-      shooterSys.liftShooter();
-    }else {
-      shooterSys.dropShooter();
-    }
-  }
 
-  public void toggleRelay() {
-    if(!shooterSys.isRelayOn()){
-      shooterSys.startRelay();
-    }else {
-      shooterSys.stopRelay();
-    }
-  }
 
   public double aimbot() {
-    float kp = -1f;
-    float minCommand = .05f;
-    float steeringAdjust = 0.5f;
+    float kp = -.1f;
+    float minCommand = .005f;
+    float steeringAdjust = 0.05f;
     //double txEntry = getValue("tx").getDouble(0.0);
     float tx = (float) 
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
