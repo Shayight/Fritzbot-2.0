@@ -45,12 +45,12 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private DriveSubsystem driveSys;
   private ShooterSubsystem shooterSys;
-  private JoystickSubsystem joySys;
   private DriveCommand driveCommand;
   private CameraSubsystem cam;
   private Limelight limelight;
     private OI oi;
   private ShootingCommand scomm;
+ // private JoystickCommand jcomm;
 
   /**public static enum LightMode {
 		eOn, eOff, eBlink
@@ -77,10 +77,11 @@ public class Robot extends TimedRobot {
     driveSys = new DriveSubsystem(4, 1, 3, 2);
     shooterSys = new ShooterSubsystem(2, 3, 5, 6, 5, 0, 0);
     limelight = new Limelight();
-    scomm = new ShootingCommand();
     cam = new CameraSubsystem();
     oi = new OI();
-    driveCommand = new DriveCommand(driveSys, joySys);
+    driveCommand = new DriveCommand(driveSys, oi);
+    scomm = new ShootingCommand(shooterSys);
+   // jcomm = new JoystickCommand(driveSys, shooterSys, oi, scomm);
     cam.Vision();
   }
 
@@ -134,13 +135,27 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-   double leftAdjust = 0.0;
-   double rightAdjust = 0.0;
-
+   shooterSys.Proximity();
+   double leftAdjust = -1.0;
+   double rightAdjust = -1.0; // default speed values for chase
    leftAdjust -= aimbot();
    rightAdjust += aimbot();
+   
+    if(shooterSys.getProximity() >= 120)
+      driveSys.control(0, 0, 1);
 
-   driveSys.control(leftAdjust, rightAdjust, 1);
+    else{
+      if(cam.isTarget() == false){
+        driveSys.highGear();
+       driveSys.control(-.5, .5, 1);
+      }else if((cam.isTarget() == true)){
+           driveSys.control(leftAdjust, rightAdjust, 1);
+         }
+    }
+      
+
+
+  //driveSys.control(leftAdjust, rightAdjust, 1);
 
    // System.out.println("Created adjust varibles");
    //while (limelight.isTarget() != false) {
@@ -172,6 +187,9 @@ public class Robot extends TimedRobot {
     limelight.setLed("off");
     cam.setLedMode(LightMode.eOff);
     cam.setCameraMode(CameraMode.eDriver);
+
+    driveSys.setDefaultCommand(driveCommand);
+    //oi.setDefaultCommand(jcomm);
   }
 
   /**
@@ -179,15 +197,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    driveCommand.execute();
     limelight.debug();
-    double inputL = dualShock.getRawAxis(1);
-    double inputR = dualShock.getRawAxis(5); 
-    double modifier = 1; 
     
     shooterSys.ColorSensor();
     shooterSys.Proximity();
-    joySys.ControlMapping(driveSys, scomm);
     
   }
 
@@ -209,7 +222,7 @@ public class Robot extends TimedRobot {
 
 
   public double aimbot() {
-    float kp = -.1f;
+    float kp = -.05f;
     float minCommand = .005f;
     float steeringAdjust = 0.05f;
     //double txEntry = getValue("tx").getDouble(0.0);

@@ -97,6 +97,10 @@ public class ShooterSubsystem extends SubsystemBase {
         dashboard.putNumber("Proximity", proximity);
     }
 
+    public int getProximity() {
+        return colorSensor.getProximity();
+    }
+
     public void print(String input){
         System.out.println(input);
     }

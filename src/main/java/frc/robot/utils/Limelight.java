@@ -23,7 +23,7 @@ public class Limelight {
 
     public Limelight(){
         // Set table to limelight
-        table = NetworkTableInstance.getDefault().getTable("Testing1");
+        table = NetworkTableInstance.getDefault().getTable("limelight");
 
         // Get stats
         tx = table.getEntry("tx");
