@@ -3,13 +3,13 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.ShootingCommand;
+// import frc.robot.commands.ShootingCommand;
 public class JoystickSubsystem extends SubsystemBase {
     public Joystick joy;
     public boolean square,cross,circle,triangle,lBumper,rBumper,lTrigger,rTrigger,
     select,start,lsButton,rsButton,touchpad;
     public double lStickV,rStickV;
-    private ShooterSubsystem shooterSys;
+    // private ShooterSubsystem shooterSys;
     
 
     public void controlsInit() {
@@ -76,17 +76,17 @@ public class JoystickSubsystem extends SubsystemBase {
         return joy.getRawAxis(5);
     }
 
-    public void ControlMapping(DriveSubsystem driveSys,  ShootingCommand scomm) {
+    public void ControlMapping(DriveSubsystem driveSys) {
         new JoystickButton(joy, 1)
         .whenPressed(() -> driveSys.highGear());
-      new JoystickButton(joy, 2)
-        .whenPressed(() -> toggleShooter());
-      new JoystickButton(joy, 3)
-        .whenPressed(() -> toggleRelay());
+      // new JoystickButton(joy, 2)
+      //   .whenPressed(() -> toggleShooter());
+      // new JoystickButton(joy, 3)
+      //   .whenPressed(() -> toggleRelay());
       new JoystickButton(joy, 4)
         .whenPressed(() -> driveSys.lowGear());
-      new JoystickButton(joy, 5)
-        .whenPressed(() -> scomm.execute());
+      // new JoystickButton(joy, 5)
+      //   .whenPressed(() -> scomm.execute());
       new JoystickButton(joy, 6)
         .whenPressed(() -> driveSys.resetGyro());
       //new JoystickButton(dualShock, 7)
@@ -94,21 +94,21 @@ public class JoystickSubsystem extends SubsystemBase {
 
     }
 
-    public void toggleShooter() {
-        //isLifted = !isLifted;
-        if(!shooterSys.isUp()) {
-          shooterSys.liftShooter();
-        }else {
-          shooterSys.dropShooter();
-        }
-      }
+    // public void toggleShooter() {
+    //     //isLifted = !isLifted;
+    //     if(!shooterSys.isUp()) {
+    //       shooterSys.liftShooter();
+    //     }else {
+    //       shooterSys.dropShooter();
+    //     }
+    //   }
     
-      public void toggleRelay() {
-        if(!shooterSys.isRelayOn()){
-          shooterSys.startRelay();
-        }else {
-          shooterSys.stopRelay();
-        }
-      }
+      // public void toggleRelay() {
+      //   if(!shooterSys.isRelayOn()){
+      //     shooterSys.startRelay();
+      //   }else {
+      //     shooterSys.stopRelay();
+      //   }
+      // }
     
 }

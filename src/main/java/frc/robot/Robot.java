@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.JoystickCommand;
-import frc.robot.commands.ShootingCommand;
+// import frc.robot.commands.ShootingCommand;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.JoystickSubsystem;
@@ -49,7 +49,7 @@ public class Robot extends TimedRobot {
   private CameraSubsystem cam;
   private Limelight limelight;
     private OI oi;
-  private ShootingCommand scomm;
+  // private ShootingCommand scomm;
  // private JoystickCommand jcomm;
 
   /**public static enum LightMode {
@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
     cam = new CameraSubsystem();
     oi = new OI();
     driveCommand = new DriveCommand(driveSys, oi);
-    scomm = new ShootingCommand(shooterSys);
+    // scomm = new ShootingCommand(shooterSys);
    // jcomm = new JoystickCommand(driveSys, shooterSys, oi, scomm);
     cam.Vision();
   }
@@ -135,7 +135,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-   shooterSys.Proximity();
+  //  shooterSys.Proximity();
    double leftAdjust = -1.0;
    double rightAdjust = -1.0; // default speed values for chase
    leftAdjust -= aimbot();
@@ -182,7 +182,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     } 
     driveCommand.initialize();
-    shooterSys.dropShooter();
+    // shooterSys.dropShooter();
     limelight.setCameraMode("vision");
     limelight.setLed("off");
     cam.setLedMode(LightMode.eOff);

@@ -33,51 +33,51 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
 
-    public void liftShooter() {
-        heightSolenoid.set(DoubleSolenoid.Value.kForward);
-        heightSolenoid.get();
-        //print("Cross pressed");
-    }
+    // public void liftShooter() {
+    //     heightSolenoid.set(DoubleSolenoid.Value.kForward);
+    //     heightSolenoid.get();
+    //     //print("Cross pressed");
+    // }
 
-    public boolean isUp() {
-        return heightSolenoid.get() == DoubleSolenoid.Value.kForward;
-    }
+    // public boolean isUp() {
+    //     return heightSolenoid.get() == DoubleSolenoid.Value.kForward;
+    // }
 
-    public boolean isRelayOn() {
-        return windowMotor.get() == Relay.Value.kReverse;
-    }
+    // public boolean isRelayOn() {
+    //     return windowMotor.get() == Relay.Value.kReverse;
+    // }
 
-    public void dropShooter() {
-        heightSolenoid.set(DoubleSolenoid.Value.kReverse);
-        //print("Circle pressed");
-    }
+    // public void dropShooter() {
+    //     heightSolenoid.set(DoubleSolenoid.Value.kReverse);
+    //     //print("Circle pressed");
+    // }
 
-    public void startRelay() {
-        windowMotor.set(Relay.Value.kReverse);
-    }
+    // public void startRelay() {
+    //     windowMotor.set(Relay.Value.kReverse);
+    // }
 
-    public void stopRelay() {
-        windowMotor.set(Relay.Value.kOff);
-    }
+    // public void stopRelay() {
+    //     windowMotor.set(Relay.Value.kOff);
+    // }
 
-    public void spoolMotors(double modifier1, double modifier2) {
-        motor1.setSpeed(.5*modifier1);
-        motor2.setSpeed(1*modifier2);
-    }
+    // public void spoolMotors(double modifier1, double modifier2) {
+    //     motor1.setSpeed(.5*modifier1);
+    //     motor2.setSpeed(1*modifier2);
+    // }
 
-    public void fireFrisbee() {
-        shooterSolenoid.set(DoubleSolenoid.Value.kForward);
-    }
+    // public void fireFrisbee() {
+    //     shooterSolenoid.set(DoubleSolenoid.Value.kForward);
+    // }
 
-    public void resetShooter() {
-        motor1.setSpeed(0);
-        motor2.setSpeed(0);
-        shooterSolenoid.set(DoubleSolenoid.Value.kReverse);
-    }
+    // public void resetShooter() {
+    //     motor1.setSpeed(0);
+    //     motor2.setSpeed(0);
+    //     shooterSolenoid.set(DoubleSolenoid.Value.kReverse);
+    // }
     
-    public void load() {
-        windowMotor.set(Relay.Value.kReverse);
-    }
+    // public void load() {
+    //     windowMotor.set(Relay.Value.kReverse);
+    // }
 
     public void ColorSensor() {
         Color detectedColor = colorSensor.getColor();

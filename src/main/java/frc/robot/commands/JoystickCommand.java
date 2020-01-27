@@ -12,14 +12,14 @@ public class JoystickCommand extends CommandBase {
     public Joystick dualShock;
     public OI oi;
     private DriveSubsystem driveSys;
-    private ShooterSubsystem shooterSys;
-    private ShootingCommand scomm;
+    // private ShooterSubsystem shooterSys;
+    // private ShootingCommand scomm;
 
-    public JoystickCommand(DriveSubsystem driveSys, ShooterSubsystem shooterSys, OI oi, ShootingCommand scomm) {
+    public JoystickCommand(DriveSubsystem driveSys, OI oi) {
         driveSys = this.driveSys;
-        shooterSys = this.shooterSys; // Buggy code
+        // shooterSys = this.shooterSys; // Buggy code
         oi = this.oi;
-        scomm = this.scomm;
+        // scomm = this.scomm;
             /**
             new JoystickButton(dualShock, 1)
               .whenPressed(() -> driveSys.highGear());
@@ -38,35 +38,35 @@ public class JoystickCommand extends CommandBase {
             */
             if(oi.getSquare())
               driveSys.highGear();
-            else if(oi.getCross())
-              toggleShooter();
-            else if(oi.getCircle())
-              toggleRelay();
+            // else if(oi.getCross())
+            //   toggleShooter();
+            // else if(oi.getCircle())
+            //   toggleRelay();
             else if(oi.getTriangle())
               driveSys.lowGear();
-            else if(oi.getlBumper())
-              scomm.execute();
+            // else if(oi.getlBumper())
+            //   scomm.execute();
             else if(oi.getrBumper())
               driveSys.resetGyro();
 
     }
 
-    public void toggleShooter() {
-        //isLifted = !isLifted;
-        if(!shooterSys.isUp()) {
-          shooterSys.liftShooter();
-        }else {
-          shooterSys.dropShooter();
-        }
-      }
+    // public void toggleShooter() {
+    //     //isLifted = !isLifted;
+    //     if(!shooterSys.isUp()) {
+    //       shooterSys.liftShooter();
+    //     }else {
+    //       shooterSys.dropShooter();
+    //     }
+    //   }
     
-      public void toggleRelay() {
-        if(!shooterSys.isRelayOn()){
-          shooterSys.startRelay();
-        }else {
-          shooterSys.stopRelay();
-        }
-      }
+      // public void toggleRelay() {
+      //   if(!shooterSys.isRelayOn()){
+      //     shooterSys.startRelay();
+      //   }else {
+      //     shooterSys.stopRelay();
+      //   }
+      // }
 
     // Called when the command is initially scheduled.
   @Override
