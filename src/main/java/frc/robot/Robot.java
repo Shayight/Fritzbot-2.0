@@ -14,10 +14,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.JoystickCommand;
-// import frc.robot.commands.ShootingCommand;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.CameraSubsystem.CameraMode;
 import frc.robot.subsystems.CameraSubsystem.LightMode;
@@ -51,7 +49,6 @@ public class Robot extends TimedRobot {
   private Limelight limelight;
     private OI oi;
     private TurretSubsystem s_turret;
-    private JoystickSubsystem s_joy;
     double turretVal;
     double turretVal2;
   // private ShootingCommand scomm;
