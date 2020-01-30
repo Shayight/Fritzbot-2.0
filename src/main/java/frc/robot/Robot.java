@@ -21,6 +21,7 @@ import frc.robot.subsystems.JoystickSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.CameraSubsystem.CameraMode;
 import frc.robot.subsystems.CameraSubsystem.LightMode;
+import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.utils.Limelight;
 import frc.robot.utils.OI;
 import edu.wpi.first.wpilibj.Joystick;
@@ -44,11 +45,15 @@ public class Robot extends TimedRobot {
   //public SpeedControllerGroup rightSide;
   private RobotContainer m_robotContainer;
   private DriveSubsystem driveSys;
-  private ShooterSubsystem shooterSys;
+  // private ShooterSubsystem shooterSys;
   private DriveCommand driveCommand;
   private CameraSubsystem cam;
   private Limelight limelight;
     private OI oi;
+    private TurretSubsystem s_turret;
+    private JoystickSubsystem s_joy;
+    double turretVal;
+    double turretVal2;
   // private ShootingCommand scomm;
  // private JoystickCommand jcomm;
 
@@ -75,8 +80,9 @@ public class Robot extends TimedRobot {
     dualShock = new Joystick(0);
     dualShock2 = new Joystick(1);
     driveSys = new DriveSubsystem(4, 1, 3, 2);
-    shooterSys = new ShooterSubsystem(2, 3, 5, 6, 5, 0, 0);
+    // shooterSys = new ShooterSubsystem(2, 3, 5, 6, 5, 0, 0);
     limelight = new Limelight();
+    s_turret = new TurretSubsystem();
     cam = new CameraSubsystem();
     oi = new OI();
     driveCommand = new DriveCommand(driveSys, oi);
@@ -141,17 +147,17 @@ public class Robot extends TimedRobot {
    leftAdjust -= aimbot();
    rightAdjust += aimbot();
    
-    if(shooterSys.getProximity() >= 120)
-      driveSys.control(0, 0, 1);
+    // if(shooterSys.getProximity() >= 120)
+    //   driveSys.control(0, 0, 1);
 
-    else{
-      if(cam.isTarget() == false){
-        driveSys.highGear();
-       driveSys.control(-.5, .5, 1);
-      }else if((cam.isTarget() == true)){
-           driveSys.control(leftAdjust, rightAdjust, 1);
-         }
-    }
+    // else{
+    //   if(cam.isTarget() == false){
+    //     driveSys.highGear();
+    //    driveSys.control(-.5, .5, 1);
+    //   }else if((cam.isTarget() == true)){
+    //        driveSys.control(leftAdjust, rightAdjust, 1);
+    //      }
+    // }
       
 
 
@@ -174,6 +180,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    
+    
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -197,10 +205,25 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    limelight.debug();
+    // limelight.debug();
     
-    shooterSys.ColorSensor();
-    shooterSys.Proximity();
+    // shooterSys.ColorSensor();
+    // shooterSys.Proximity();
+
+
+    turretVal = oi.getLeftTurretAxis();
+    turretVal = turretVal/2+0.5;
+    turretVal = turretVal*0.25;
+    turretVal2 = oi.getRightTurretAxis();
+    turretVal2 = turretVal2/2+0.5;
+    turretVal2 = turretVal2*(0.25);
+    turretVal2= turretVal-turretVal2;
+    s_turret.turret(turretVal2);
+
+    s_turret.getEncoderVal();
+
+
+
     
   }
 

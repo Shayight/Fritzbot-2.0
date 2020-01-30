@@ -73,5 +73,10 @@ public class OI extends SubsystemBase {
     public double getrStickV() {
         return joy.getRawAxis(5);
     }
-    
+    public double getLeftTurretAxis(){
+        return joy.getRawAxis(3);
+    }
+    public double getRightTurretAxis(){
+        return joy.getRawAxis(4);
+    }
 }
