@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Talon;
 public class TurretSubsystem extends SubsystemBase {
   public VictorSP m_turret;
   public Encoder e_turret;
-  public Talon m_feeder;
+  // public Talon m_feeder;
   int turretVal;
   /**
    * Creates a new TurretSubsystem.
@@ -23,7 +23,7 @@ public class TurretSubsystem extends SubsystemBase {
   public TurretSubsystem() {
     m_turret = new VictorSP(0);
     e_turret = new Encoder(0,1);
-    m_feeder = new Talon(5);
+    // m_feeder = new Talon(5);
   }
 
   public void turret(double axis){
@@ -36,9 +36,9 @@ public class TurretSubsystem extends SubsystemBase {
     return turretVal;
   }
 
-  public void feeder(double speed){
-    m_feeder.set(speed);
-  }
+  // public void feeder(double speed){
+  //   m_feeder.set(speed);
+  // }
 
 
 }
