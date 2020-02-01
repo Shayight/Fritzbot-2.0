@@ -11,27 +11,37 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.AnalogInput;
 
 public class TurretSubsystem extends SubsystemBase {
   public VictorSP m_turret;
-  public Encoder e_turret;
+  public AnalogInput e_turret;
+   // public Encoder e_turret;
   // public Talon m_feeder;
-  int turretVal;
+  double turretVal;
   /**
    * Creates a new TurretSubsystem.
    */
   public TurretSubsystem() {
     m_turret = new VictorSP(0);
-    e_turret = new Encoder(0,1);
+    e_turret = new AnalogInput(0);
+    //e_turret = new AnalogEncoder(new AnalogInput(0));
+    // e_turret.setDistancePerRotation(360/5);
+    
     // m_feeder = new Talon(5);
+  }
+
+  public void resetEncoder() {
+    e_turret.resetAccumulator();
   }
 
   public void turret(double axis){
     m_turret.set(axis);
   }
  
-  public int getEncoderVal(){
-    turretVal = e_turret.getRaw();
+  public double getEncoderVal(){
+    turretVal = e_turret.getValue();
     System.out.println(turretVal);
     return turretVal;
   }

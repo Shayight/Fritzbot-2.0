@@ -207,7 +207,9 @@ public class Robot extends TimedRobot {
     // shooterSys.ColorSensor();
     // shooterSys.Proximity();
 
-
+    if (oi.joy.getRawButtonPressed(3)) {
+      s_turret.resetEncoder();
+    }
     turretVal = oi.getLeftTurretAxis();
     turretVal = turretVal/2+0.5;
     turretVal = turretVal*0.25;
