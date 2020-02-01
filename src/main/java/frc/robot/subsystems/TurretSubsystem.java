@@ -37,10 +37,7 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void turret(double axis){
-    if(getEncoderVal() < 45 && getEncoderVal() > -45)
-      m_turret.set(axis);
-    else
-      m_turret.set(0);
+    m_turret.set(axis);
   }
  
   public double getEncoderVal(){
@@ -53,7 +50,6 @@ public class TurretSubsystem extends SubsystemBase {
   // public void feeder(double speed){
   //   m_feeder.set(speed);
   // }
-  
 
 
 }
